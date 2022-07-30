@@ -1,0 +1,24 @@
+{% if record.translation_complete_check == True %}
+    <button class="btn btn-danger" data-id="{{ record.id }}" onclick="status_update($(this));">
+        Not Complete
+    </button>
+{% else %}
+    <button class="btn btn-success">Completed</button>
+{% endif %}
+
+
+<script>
+    function status_update(record_data) {
+        var data_id = record_data.attr("data-id");
+        var status_update = confirm("Approve Data?");
+        if (status_update) {
+            $.ajax({
+                url: "{% url 'cash:update-status' %}",
+                data: {'get_data': data_id,},
+                success: function (data) {
+                    location.reload();
+                }
+            });
+        }
+    }
+</script>

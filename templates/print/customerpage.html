@@ -1,0 +1,206 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<!-- Required meta tags -->
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+	<title>{% block title %}{% endblock title %}</title>
+    <style type="text/css">
+		body{
+			font-family: 'Noto Sans', sans-serif;
+		}
+        caption {
+			caption-side:top;
+			text-align:center;
+			font-size:18px;
+			text-decoration: underline;
+		}
+	</style>
+</head>
+
+<body style="height: 842px;">
+	<div class="pl-4 pr-4 pt-4 pb-5">
+        <header>
+            <div class="row">
+                <div class="col company-details text-center">
+                    <div>TAX INVOICE</div>
+                    <h4>CHALISE POULTRY SUPPLIERS</h4>
+                    <div>BIDUR-6, NUWAKOT</div>
+                    <div>VAT / PAN NO :- 304222964</div>
+                    <div>PH. NO:-9841452443 / 9849386743 / 9860574222</div>
+                </div>
+            </div>
+        </header>
+        <hr/>
+        <h5 class="text-center"><u>Customer Details</u></h5>
+        <div class="row mx-auto">
+            <div class="col">
+                <div class="address">Name: <strong>{{ object.queryset.customer.name }}</strong></div>
+                <div class="address">VAT/PAN: <strong>{{ object.queryset.customer.vat_pan_number }}</strong></div>
+                <div class="address">Contact: <strong>{{ object.queryset.customer.contact_number }}</strong></div>
+            </div>
+            <div class="col">
+                <div class="address">Address: <strong>{{ object.queryset.customer.address }}</strong></div>
+                <div class="address">Date: <strong>{{ object.english_date.date }}</strong></div>
+                <div class="address">Miti: <strong>{{ object.nepali_date }}</strong></div>
+                <div class="address">Deposit Amount: <strong>NRs. {{ object.queryset.amount }}</strong></div>
+            </div>
+        </div>
+        <hr/>
+
+        <h5 class="text-center"><u>Purchase Details</u></h5>
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th style="width: 20px;">S.No.</th>
+                    <th class="text-center">Date</th>
+                    <th class="text-center">Items Description</th>
+                    <th class="text-right">Quantity</th>
+                    <th class="text-right">Basic Rate</th>
+                    <th class="text-right">Amount in NRs.</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for countersales in object.countersales %}
+                    
+                        <tr>
+                            <td>{{ countersales.value }}</td>
+                            <td>{{ countersales.date }}</td>
+                            <td class="text-left">{{ countersales.items_description }}</td>
+                            <td>{{ countersales.quantity }}</td>
+                            <td class="text-right">{{ countersales.basic_rate }}</td>
+                            <td class="text-right">{{ countersales.total_amount }}</td>
+                        </tr>
+                    
+                {% endfor %}
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td></td>
+                    <td colspan="4" class="text-right">Total after discount</td>
+                    <td class="text-right">{{ object.countersales_total.total_after_discount }}</td>
+                </tr>
+            </tfoot>
+        </table>
+        
+        <hr/>
+        <h5 class="text-center"><u>Sales Details</u></h5>
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th style="width: 20px;">S.No.</th>
+                    <th class="text-center">Date</th>
+                    <th class="text-center">Number of chicken</th>
+                    <th class="text-left">Weight</th>
+                    <th class="text-right">Basic Rate</th>
+                    <th class="text-right">Amount in NRs.</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for freshhousesales in object.freshhousesales %}
+                    {% for item in freshhousesales.freshhousesalesbatchentry_set.all %}
+                        <tr>
+                            <td>{{ forloop.counter }}</td>
+                            <td>{{ freshhousesales.date.date }}</td>
+                            <td class="text-left">{{ item.number_of_chicken }}</td>
+                            <td>{{ item.weight }}</td>
+                            <td class="text-right">{{ item.basic_rate }}</td>
+                            <td class="text-right">{{ item.total_amount }}</td>
+                        </tr>
+                    {% endfor %}
+                {% endfor %}
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td></td>
+                    <td colspan="4" class="text-right">Total</td>
+                    <td class="text-right">{{ object.freshhousesales_total.total }}</td>
+                </tr>
+            </tfoot>
+        </table>
+
+        <hr/>
+        <h5 class="text-center"><u>Cash Details</u></h5>
+        <table class="table table-bordered">
+            <caption>Payment Voucher</caption>
+            <thead>
+                <tr>
+                    <th style="width: 20px;">S.No.</th>
+                    <th class="text-center">Date</th>
+                    <th class="text-center" style="width:10px;">Voucher Number</th>
+                    <th class="text-center">Receiver's Name</th>
+                    <th class="text-right">Amount in NRs.</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in object.cashpayment %}
+                    <tr>
+                        <td>{{ forloop.counter }}</td>
+                        <td>{{ item.date.date }}</td>
+                        <td>{{ item.voucher_number }}</td>
+                        <td>{{ item.receivers_name }}</td>
+                        <td class="text-right">{{ item.amount }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td></td>
+                    <td colspan="3" class="text-right">Total</td>
+                    <td class="text-right">{{ object.cashpayment_total.total }}</td>
+                </tr>
+            </tfoot>
+        </table>
+
+        <hr/>
+        <table class="table table-bordered">
+            <caption>Receive Voucher</caption>
+            <thead>
+                <tr>
+                    <th style="width: 20px;">S.No.</th>
+                    <th class="text-center">Date</th>
+                    <th class="text-center" style="width:10px;">Voucher Number</th>
+                    <th class="text-center">Pay By</th>
+                    <th class="text-right">Amount in NRs.</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in object.cashreceive %}
+                    <tr>
+                        <td>{{ forloop.counter }}</td>
+                        <td>{{ item.date.date }}</td>
+                        <td>{{ item.voucher_number }}</td>
+                        <td>{{ item.pay_by }}</td>
+                        <td class="text-right">{{ item.amount }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td></td>
+                    <td colspan="3" class="text-right">Total</td>
+                    <td class="text-right">{{ object.cashreceive_total.total }}</td>
+                </tr>
+            </tfoot>
+        </table>
+
+        <table class="table table-borderless">
+            <tfoot>
+                <tr>
+                    <td></td>
+                    <td colspan="3" class="text-right">Total profit or loss</td>
+                    <td class="text-right">{{ object.profit_or_loss_amount }} {% if object.profit %}(Profit){% else %}(Loss){% endif %}</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td colspan="3" class="text-right">Amount to be {% if object.total_amount_status %}received{% else %}paid{% endif %}</td>
+                    <td class="text-right">{{ object.total_amount }}</td>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+</body>
+
+</html>

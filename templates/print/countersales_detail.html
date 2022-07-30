@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<!-- Required meta tags -->
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+	<title>CounterSales Detail PDF</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+	<link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;700&display=swap" rel="stylesheet"> 
+    <style type="text/css">
+		body{
+			font-family: 'Noto Sans', sans-serif;
+		}
+	</style>
+</head>
+
+<body style="height: 842px;">
+	<div class="pl-4 pr-4 pt-4 pb-5">
+        <header>
+            <div class="row ">
+                <div class="col company-details text-center">
+                    <div>TAX INVOICE</div>
+                    <h4>CHALISE POULTRY SUPPLIERS</h4>
+                    <div>BIDUR-6, NUWAKOT</div>
+                    <div>VAT / PAN NO :- 304222964</div>
+                    <div>PH. NO:-9841452443 / 9849386743 / 9860574222</div>
+                </div>
+            </div>
+        </header>
+        <hr/>
+        <div class="text-gray-light">Mode of Payment:</div>
+        <div class="row">
+            <div class="col">
+                <h5 class="text-center"><u>Customer Details</u></h5>
+                <div>Name: <strong>{{ object.customer.customer.name }}</strong></div>
+                <div>Address: <strong>{{ object.customer.customer.address }}</strong></div>
+                <div>VAT/PAN: <strong>{{ object.customer.customer.vat_pan_number }}</strong></div>
+                <div>Contact: <strong>{{ object.customer.customer.contact_number }}</strong></div>
+            </div>
+            <div class="col invoice-details">
+                <h5 class="text-center"><u>Billing Details</u></h5>
+                <div>Invoice No.: <strong>{{ object.id }}</strong></div>
+                <div>Date: <strong>{{ english_date.date }}</strong></div>
+                <div>Miti: <strong>{{ nepali_date }}</strong></div>
+            </div>
+        </div>
+        <hr/>
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th style="width: 20px;">S.No.</th>
+                    <th class="text-center">Items Description</th>
+                    <th class="text-left">Quantity</th>
+                    <th class="text-right">Basic Rate</th>
+                    <th class="text-right">Amount NRs.</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in object.countersalesbatchentry_set.all %}
+                    <tr>
+                        <td>{{ forloop.counter }}</td>
+                        <td class="text-left">{{ item.items_description }}</td>
+                        <td>{{ item.quantity }}</td>
+                        <td class="text-right">{{ item.basic_rate }}</td>
+                        <td class="text-right">{{ item.total_amount }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td colspan="3">Amount in words: </td>
+                    <td colspan="1" class="text-right">SUBTOTAL</td>
+                    <td class="text-right">{{ object.total }}</td>
+                </tr>
+                <tr>
+                    <td colspan="4" class="text-right">DISCOUNT(in amount)</td>
+                    <td class="text-right">{{ object.discount }}</td>
+                </tr>
+                <tr>
+                    <td colspan="4" class="text-right">GRAND TOTAL</td>
+                    <td class="text-right">{{ object.total_after_discount }}</td>
+                </tr>
+            </tfoot>
+        </table>
+        <div class="col text-right pt-5">
+            <div class="pt-5 pb-5">For Chalise Poultry Suppliers:</div>
+            <div class="mt-5 mr-5">Signature</div>
+        </div>
+    </div>
+</body>
+</html>

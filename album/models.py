@@ -24,9 +24,9 @@ class Album(models.Model):
             return self.album_name + " " + self.artist_name + " " + self.city.name
       
 class Song(models.Model):
-      related_model = models.ForeignKey(Album, on_delete=models.CASCADE)
+      related_object = models.ForeignKey(Album, on_delete=models.CASCADE)
       song_name = models.CharField(max_length=255)
-      time = models.FloatField()
+      song_name = models.FloatField()
       genre = models.ManyToManyField(Genre)
 
       def __str__(self):

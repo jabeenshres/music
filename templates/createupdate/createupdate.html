@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load widget_tweaks %}
+
+{% block title %}{{ heading }}{% endblock %}
+
+{% block style %}
+    <link href="{% static 'assets/plugins/datetimepicker/css/classic.css' %}" rel="stylesheet" />
+	<!-- <link href="{% static 'assets/plugins/datetimepicker/css/classic.time.css' %}" rel="stylesheet" /> -->
+    <link href="{% static 'assets/plugins/datetimepicker/css/classic.date.css' %}" rel="stylesheet" />
+{% endblock %}
+
+{% block content %}
+    <div class="wrapper">		
+		<div class="page-wrapper">
+			<!--page-content-wrapper-->
+			<div class="page-content-wrapper">
+				<div class="page-content">
+					<div class="row justify-content-center">
+						<div class="col-12">
+							<div class="card border-lg-top-danger">
+								<div class="card-body p-5">
+                                    {% include 'success_message.html' %}<br>
+									<div class="d-flex justify-content-between">
+                                        <div class="card-title">
+                                            <h3 class="text-danger">{{ heading }}</h3>
+                                        </div>
+
+                                        <div>
+                                            {% include 'base-data-view.html' %}
+                                        </div>
+									</div>
+                                    <hr/>
+
+                                    <form method="POST" enctype="multipart/form-data" id="createForm">
+                                        {% csrf_token %}
+                                        <div class="form-body">
+                                            <div class="form-row">
+                                                {% for field in form %}
+                                                <div class="form-group col-md-5 ml-4">
+                                                    <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                                                    {% render_field field class="form-control" %}
+                                                    {{ field.errors }}
+                                                </div>
+                                                {% endfor %}
+                                            </div>
+                                                <button type="submit" class="btn btn-danger ml-4">Submit</button>
+                                        </div>
+                                    </form>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+    </div>
+{% endblock %}
+

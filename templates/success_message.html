@@ -1,0 +1,17 @@
+{% if messages %}
+    {% for message in messages %}
+        <div id="success-messages">
+            <div style="font-size: 20px;color: green;">
+                <li><span>{{ message|safe }}</span></li>
+            </div>
+        </div>
+    {% endfor %}
+{% endif %}
+<script>
+    // dipslay form submmited messages
+    var message = document.getElementById("success-messages");
+    setTimeout(function(){ 
+        message.style.display = "none"; 
+    },5000);
+
+</script>

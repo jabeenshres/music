@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+<div class="page-wrapper">
+    <!--page-content-wrapper-->
+    <div class="page-content-wrapper">
+        <div class="page-content">
+            <div class="row">
+                {% for stock in stock_list %}
+                <div class="col-12 col-lg-6">
+                    <div class="card radius-15 {{ stock.code }}">
+                        <div class="card-body card-height">
+                            <div class="d-flex align-items-center">
+                                <div>
+                                    <h1 class="mb-0 text-white" style="font-size: 25px;">{{ stock.stock_name }} </h1>
+                                </div>
+                                <!-- <div class="ml-auto font-35 text-white"><i class="bx bx-cart-alt"></i>
+                                </div> -->
+                            </div>
+                            <br>
+                                    <div>
+                                        <p class="mb-0 text-white large-fontsize" style="font-size: 20px;">{{ stock.quantity }} {{ stock.unit__unit }}</p>
+                                    </div>
+
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            <!--end row-->
+           
+        </div>
+    </div>
+    <!--end page-content-wrapper-->
+</div>
+<!--Start Back To Top Button-->
+<a href="javaScript:;" class="back-to-top"><i class='bx bxs-up-arrow-alt'></i></a>
+<!--End Back To Top Button-->
+{% endblock %}
+
+{% block script %}
+<script src="{% static 'assets/js/jquery.matchHeight.js' %}" type="text/javascript"></script>
+
+<script>
+    $(function () {
+        $('.card-height').matchHeight({
+        byRow: true,
+        property: 'height',
+        target: null,
+        remove: false
+        });
+    });
+</script>
+{% endblock %}

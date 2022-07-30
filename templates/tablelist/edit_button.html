@@ -1,0 +1,5 @@
+{% if not record.status %}
+    <a class="btn btn-primary" href="{% url link record.id %}">Edit</a>
+{% else %}
+    <span>-</span>
+{% endif %}

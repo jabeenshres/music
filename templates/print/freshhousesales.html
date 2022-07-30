@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<!-- Required meta tags -->
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+	<title>Fresh House Sales Balance Sheet PDF</title>
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+	<link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;700&display=swap" rel="stylesheet"> 
+    <style type="text/css">
+		body{
+			font-family: 'Noto Sans', sans-serif;
+		}
+        .company-name {
+			text-align: left;
+        }
+	</style>
+</head>
+
+<body style="height: 842px;">
+    <h4 class="text-center mb-0">Fresh House Sales (Customer)</h4>
+    <h4 class="text-center mb-0">Balance Sheet</h4>
+    {% if company_name %}
+    <div class="row">
+        <div class="col company-name">
+            <h6>Company Name:&nbsp;&nbsp;{{ company_name }}</h6>
+        </div>
+    </div>
+        {% endif %}
+    <hr/>
+    <div class="table-responsive">
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>S.N.</th>
+                    <th>Date</th>
+                    <th>Rate</th>
+                    <th>Weight</th>
+                    <th class="text-right">Total Amount</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in object_list %}
+                    <tr>
+                        <td>{{ forloop.counter }}</td>
+                        <td>{{ item.related_object.date.date }}</td>
+                        <td>{{ item.basic_rate }}</td>
+                        <td>{{ item.basic_rate }}</td>
+                        <td class="text-right">{{ item.total_amount }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td></td>
+                    <td colspan="3" class="text-right">Total</td>
+                    <td class="text-right">{{ total }}</td>
+                </tr>
+            </tfoot>
+        </table>
+
+        
+    </div>
+</body>
+</html>

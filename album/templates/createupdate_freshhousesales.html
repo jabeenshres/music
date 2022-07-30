@@ -1,0 +1,283 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load widget_tweaks %}
+
+{% block title %}{{ heading }}{% endblock %}
+
+{% block content %}
+<div class="wrapper">		
+    <div class="page-wrapper">
+        <!--page-content-wrapper-->
+        <div class="page-content-wrapper">
+            <div class="page-content">
+                <div class="row justify-content-center">
+                    <div class="col-12">
+                        <div class="card border-lg-top-danger">
+                            <div class="card-body p-5">
+                                <div class="d-flex justify-content-between">
+                                    <div class="card-title">
+                                        <h3 class="text-danger">{{ heading }}</h3>
+                                    </div>
+                                    <div>
+                                        {% include 'base-data-view.html' %}
+                                    </div>
+                                </div>
+                                <hr/>
+                                <form class="form-horizontal" method="POST">
+                                    {% csrf_token %}
+                                        <div class="form-body">
+                                            <div class="form-row">
+                                                {% for field in form %}
+                                                <div class="form-group col-md-5 ml-4">
+                                                    <label for="{{ field.id_for_label }}" class="label">{{ field.label }}</label>
+                                                    {% render_field field class="form-control" %}
+                                                    {% comment %}
+                                                    {% if field.name == "customer" %}
+                                                        <div class="d-flex">
+                                                            {% render_field field class="form-control" %}
+                                                            <a class="btn" href="{% url 'cash:create-popup' %}" id="add_customer" 
+                                                                onclick="return showAddPopup(this);"><i class="bx bx-plus"></i></a>
+                                                            <a class="btn" id="edit_customer" style="cursor: pointer; cursor: hand;">
+                                                                <i class="bx bx-pencil"></i></a>
+                                                        </div>
+                                                    {% elif field.name == "total" %}
+                                                        {% render_field field class="form-control" readonly="True" %}
+                                                    {% else %}
+                                                        
+                                                    {% endif %}
+                                                    {% endcomment %}
+                                                    <span for="{{ field.id_for_label }}">{{ field.errors }}</span>
+
+                                                    {% if forloop.last %}
+                                                        </div>
+                                                    {% else %}
+                                                        {% if not forloop.counter|divisibleby:"2" %}
+                                                        </div><div class="form-row">
+                                                        {% endif %}
+                                                    </div>
+                                                    {% endif %}
+                                                {% endfor %}   
+                                            </div> 
+                                        </div>
+                                        <hr>
+                                        <h4>Fresh House Sales Batch Entry</h4><br>
+                                        <div class="form-body">
+                                            {{ formset.management_form }}
+                                            {% for form in formset %}
+                                                {{ form.id }}
+                                                <div class="form-row formset">
+                                                    <div class="form-group col-md-3 ml-3">
+                                                        <label for="{{ field.id_for_label }}">{{ form.song_name.label }}</label>
+                                                        {% render_field form.song_name class="form-control" %}
+                                                        {{ form.song_name.errors }}
+                                                    </div>
+                                                    <div class="form-group col-md-2 ml-2">
+                                                        <label for="{{ field.id_for_label }}">{{ form.song_name.label }}</label>
+                                                        {% render_field form.song_name class="form-control" %}
+                                                        {{ form.song_name.errors }}
+                                                    </div>
+
+                                                    <div class="form-group col-md-2 ml-2">
+                                                        <label for="{{ field.id_for_label }}">{{ form.genre.label }}</label>
+                                                        {% render_field form.genre class="form-control weight" %}
+                                                        {{ form.genre.errors }}
+                                                    </div>
+                                                    
+
+                                                    {% if 'update' in request.path %}
+                                                        <input class="form-group remove-form-row btn btn-danger mx-auto" 
+                                                            data-id={{form.id.value}} type="button" value="Remove"
+                                                            href="/fresh-house-sales/delete/item/">
+                                                    {% else %}
+                                                    <input class="form-group remove-form-row-in-create btn btn-danger mx-auto" type="button" value="Remove">
+                                                    {% endif %}
+                                                </div> 
+                                            {% endfor %}
+                                        </div>
+                                        <div class="ml-4 mb-2">
+                                            <input class="btn btn-primary add-form-row" type="button" value="Add Another Item">
+                                        </div>
+
+                                        <button type="submit" class="btn btn-danger ml-4">Submit</button>
+                                        <a onclick="goBack()" class="btn btn-success">Cancel</a>
+                                    </div>
+                                    </form>
+                                </div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+    </div>
+
+{% endblock %}
+
+{% block script %}
+<script>
+    function goBack() {
+        window.history.back()
+    }
+</script>
+
+<!-- Pop up feature -->
+<script>
+    function showEditPopup(url) {
+        var win = window.open(url, "Edit", 'height=500,width=800,resizable=yes,scrollbars=yes');
+        return false;
+    }
+
+    function showAddPopup(triggeringLink) {
+        var name = triggeringLink.id.replace(/^add_/, '');
+        href = triggeringLink.href;
+        var win = window.open(href, name, 'height=500,width=800,resizable=yes,scrollbars=yes');
+        win.focus();
+        return false;
+    }
+
+    function closePopup(win, newID, newRepr, id) {
+        $(id).append('<option value=' + newID + ' selected >' + newRepr + '</option>')
+        win.close();
+    }
+
+    $("#edit_customer").click(function () {
+        get_data = $("#id_customer option:selected").val();
+        var data = {
+            "get_data": get_data
+        };
+        if (get_data) {
+            $.ajax({
+                type: 'GET',
+                url: '/cash/get-id/',
+                data: data,
+                success: function (data) {
+                    var url = "/cash/update/pop-up/" + data['data_id'];
+                    showEditPopup(url);
+                },
+                error: function (data) {
+                    alert("Something Went Wrong");
+                }
+            });
+        }
+    });
+</script>
+
+<!-- Multiple form -->
+<script type='text/javascript'>
+    function updateElementIndex(el, prefix, ndx) {
+        var id_regex = new RegExp('(' + prefix + '-\\d+)');
+        var replacement = prefix + '-' + ndx;
+        if ($(el).attr("for")) {
+            $(el).attr("for", $(el).attr("for").replace(id_regex, replacement));
+        } 
+        if (el.id) {
+            el.id = el.id.replace(id_regex, replacement);
+        }
+        if (el.name) {
+            el.name = el.name.replace(id_regex, replacement);
+        }
+    }
+
+    function cloneMore(selector, prefix) {
+        var newElement = $(selector).clone(true);
+        var total = $('#id_' + prefix + '-TOTAL_FORMS').val();
+        newElement.find(':input([type=button])').each(function() {
+            $(this).attr({'data-id': ""});
+        });
+        newElement.find(':input:not([type=button]):not([type=submit]):not([type=reset])').each(function() {
+            var name = $(this).attr('name').replace('-' + (total-1) + '-', '-' + total + '-');
+            var id = 'id_' + name;
+            $(this).attr({'name': name, 'id': id, 'data-id': total}).val('').removeAttr('checked');
+        });
+        newElement.find('label').each(function() {
+            var forValue = $(this).attr('for');
+            if (forValue) {
+              forValue = forValue.replace('-' + (total-1) + '-', '-' + total + '-');
+              $(this).attr({'for': forValue});
+            }
+        });
+        total++;
+        $('#id_' + prefix + '-TOTAL_FORMS').val(total);
+        $(selector).after(newElement);
+        var conditionRow = $('.form-row.formset:not(:last)');
+        conditionRow.find('.btn.add-form-row')
+        .removeClass('btn-success').addClass('btn-danger')
+        .removeClass('add-form-row').addClass('remove-form-row')
+        .html('<span class="glyphicon glyphicon-minus" aria-hidden="true"></span>');
+        return false;
+    }
+
+    function deleteForm(prefix, btn) {
+        var total = parseInt($('#id_' + prefix + '-TOTAL_FORMS').val());
+        if (total > 1){
+            btn.parent('.form-row.formset').remove();
+            var forms = $('.form-row.formset');
+            $('#id_' + prefix + '-TOTAL_FORMS').val(forms.length);
+            for (var i=0, formCount=forms.length; i<formCount; i++) {
+                $(forms.get(i)).find(':input').each(function() {
+                    updateElementIndex(this, prefix, i);
+                });
+            }
+        }
+        return false;
+    }
+
+    $(document).on('click', '.add-form-row', function(e){
+        e.preventDefault();
+        cloneMore('.form-row.formset:last', 'freshhousesalesbatchentry_set');
+        return false;
+    });
+
+    $(document).on('click', '.remove-form-row-in-create', function(e){
+        e.preventDefault();
+        deleteForm('freshhousesalesbatchentry_set', $(this));
+        return false;
+    });
+
+    $(document).on('click', '.remove-form-row', function (e) {
+        e.preventDefault();
+        var btn = $(this);
+        var data_id = $(this).attr('data-id');
+        if (!confirm('Are you sure you want to delete this item?')) {
+            return;
+        }
+        if (data_id == "None") {
+            refreshItemlist(btn);
+        } else {
+            $.get($(this).attr('href')+data_id+'/', function (data) {
+                // refreshItemlist(btn);
+                location.reload();
+            })
+        } 
+    });
+
+    function refreshItemlist(btn) {
+        deleteForm('freshhousesalesbatchentry_set', btn);
+    }
+
+</script>
+
+
+<!-- Form fields dynamic during entry -->
+<script>
+    $('.weight').on('input', function() {
+        total = 0
+        $('.weight').each(function() {
+            var weight = $(this).val();
+            var basic_rate = $(this).parent().next().find('.basic-rate').val();
+            total = total + (weight * basic_rate)
+        });
+        $('#id_total').val(total);
+    });
+
+    $('.basic-rate').on('input', function() {
+        total = 0
+        $('.basic-rate').each(function() {
+            var basic_rate = $(this).val();
+            var weight = $(this).parent().prev().find('.weight').val();
+            total = total + (weight * basic_rate)
+        });
+        $('#id_total').val(total);
+    });
+</script>
+{% endblock %}
